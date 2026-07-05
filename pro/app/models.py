@@ -72,7 +72,7 @@ class GamerProfile(models.Model):
         self.tier = self.calculate_tier()
         super().save(*args, **kwargs)
 
-class RecruiterProfile(models.Model):
+class HostProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="recruiter_profile")
     location = PlainLocationField(based_fields=['city'], zoom=7, default='26.470202829291104,80.2466219093185')
     profile_level = models.PositiveIntegerField(default=1)
@@ -96,5 +96,29 @@ class RecruiterProfile(models.Model):
     def save(self, *args, **kwargs):
         self.profile_level = self.profile_level_up()
         super().save(*args, **kwargs)
-    
 
+GAME_CHOICES = [
+    ('Valorant', 'Valorant'),
+    ('Free Fire', 'Free Fire'),
+    ('BGMI', 'BGMI'),
+]
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=255)
+    host = models.ForeignKey(HostProfile, on_delete=models.CASCADE, related_name='tournaments')
+    game = models.CharField(choices=GAME_CHOICES, max_length=9)
+    created_at = models.DateTimeField(auto_now_add=True)
+    live_at = models.DateTimeField()
+    
+    def __str__(self):
+        return f'Name: {self.name} Host: {self.host.user.username} Game: {self.game}'
+
+class Team(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    leader = models.OneToOneField(GamerProfile, on_delete=models.CASCADE, related_name='team_leader')
+    player2 = models.OneToOneField(GamerProfile, on_delete=models.CASCADE, related_name='second_player', null=True, blank=True)
+    player3 = models.OneToOneField(GamerProfile, on_delete=models.CASCADE, related_name='third_player', null=True, blank=True)
+    player4 = models.OneToOneField(GamerProfile, on_delete=models.CASCADE, related_name='fourth_player', null=True, blank=True)
+
+    def __str__(self):
+        return f''
