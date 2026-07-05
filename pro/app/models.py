@@ -46,24 +46,9 @@ class GamerProfile(models.Model):
     tier = models.CharField(choices=TIER_LIST, default='C-Tier')
     valorant_info = models.OneToOneField(Valorant, on_delete=models.SET_NULL, null=True, blank=True)
     clash_of_clans_info = models.OneToOneField(ClashOfClan, on_delete=models.SET_NULL, null=True, blank=True)
-    profile_level = models.PositiveIntegerField(default=1)
-    profile_score = models.PositiveIntegerField(default=0)
     
     def __str__(self):
         return self.user.username
-    
-    def level_up(self):
-        level_requirement = {
-            1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60, 7: 70, 8: 80, 
-        }
-        
-        # Check the score required to level up based on the current level
-        required_score = level_requirement.get(self.profile_level)
-        
-        # Check if the score required for leveling up is met
-        if required_score and self.profile_score >= required_score:
-            return self.profile_level + 1
-        return self.profile_level
 
     def calculate_tier(self):
         # 1. Start with a baseline score
@@ -85,8 +70,7 @@ class GamerProfile(models.Model):
 
     def save(self, *args, **kwargs):
         self.tier = self.calculate_tier()
-        self.profile_level = self.level_up()
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 class RecruiterProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="recruiter_profile")
@@ -95,5 +79,22 @@ class RecruiterProfile(models.Model):
     profile_score = models.PositiveIntegerField(default=0)
     event_credits = models.PositiveIntegerField(default=50)
     
+    def __str__(self):
+        return f'Recruiter: {self.user.username}'
+    
+    def profile_level_up(self):
+        level_requirements = {
+            1: 10, 2: 20, 3: 30, 4: 40, 5: 50 
+        }
+        
+        required_score = level_requirements.get(self.profile_level)
+        
+        if self.profile_score >= required_score:
+            return self.profile_level + 1
+        return self.profile_level
+    
+    def save(self, *args, **kwargs):
+        self.profile_level = self.profile_level_up()
+        super().save(*args, **kwargs)
     
 
