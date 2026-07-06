@@ -3,163 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Join the Network</title>
+<title>GameLink — Join the Network</title>
 <style>
-  * {
-    box-sizing: border-box;
+  :root{
+    --bg: #05040d;
+    --panel: #0c0a1a;
+    --panel-border: rgba(168, 100, 255, 0.28);
+    --purple: #9b3cf2;
+    --purple-2: #7c3aed;
+    --blue: #3b6bf5;
+    --text: #f4f2fb;
+    --muted: #a79fc2;
+    --input-bg: rgba(255,255,255,0.02);
   }
 
-  body {
-    margin: 0;
-    background: #000;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 60px 16px;
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
 
-  .card {
-    width: 100%;
-    max-width: 400px;
-    background: #17171c;
-    border: 1px solid #2a2a30;
-    border-radius: 16px;
-    padding: 32px 28px;
+  .page{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 16px;
   }
 
-  h1 {
-    color: #f2f2f2;
-    font-size: 28px;
-    margin: 0 0 8px;
+  .layout{
+    width:100%;
+    max-width:1120px;
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap:0;
+    border:1px solid var(--panel-border);
+    border-radius:22px;
+    overflow:hidden;
   }
 
-  .subtitle {
-    color: #9a9aa2;
-    font-size: 15px;
-    margin: 0 0 24px;
+  /* ============ LEFT PANEL ============ */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 30% 15%, rgba(155,60,242,0.35), transparent 55%),
+      linear-gradient(180deg, #0b0716 0%, #050309 100%);
+    border:none;
+    border-right:1px solid var(--panel-border);
+    border-radius:0;
+    padding:32px 36px 30px;
+    overflow:hidden;
   }
 
-  h2 {
-    color: #f2f2f2;
-    font-size: 19px;
-    margin: 0 0 16px;
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-60px; right:-80px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 35%, #6d3fbd, #1c0f36 70%);
+    opacity:0.6;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    bottom:-70px; left:-60px;
+    width:200px; height:200px;
+    border-radius:50%;
+    background: radial-gradient(circle at 40% 40%, #4a2b7d, #0c0616 70%);
+    opacity:0.55;
   }
 
-  input {
-    width: 100%;
-    background: #0d0d10;
-    border: 1px solid #33333a;
-    border-radius: 8px;
-    padding: 14px 16px;
-    color: #f2f2f2;
-    font-size: 15px;
-    margin-bottom: 16px;
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+    z-index:2;
+  }
+  .brand-logo{
+    width:34px;height:34px;
+    border-radius:50%;
+    border:2.5px solid var(--purple);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    color:var(--purple);
+    font-size:18px;
+  }
+  .brand-name{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:0.2px;
+  }
+  .brand-name span{ color:#a259f7; }
+  .brand-tag{
+    font-size:10px;
+    letter-spacing:2px;
+    color: var(--muted);
+    margin-top:1px;
+    font-weight:600;
+  }
+  .brand-text{ display:flex; flex-direction:column; }
+
+  .trophy-wrap{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 26px 0 10px;
+  }
+  .trophy-glow{
+    position:absolute;
+    width:230px;height:230px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(168,85,247,0.45), transparent 70%);
+    filter: blur(6px);
+  }
+  .trophy-ring{
+    position:absolute;
+    width:260px;
+    height:70px;
+    bottom:14px;
+    border-radius:50%;
+    border:1px solid rgba(168,85,247,0.5);
+    box-shadow: 0 0 30px rgba(168,85,247,0.35);
+  }
+  .soldier{
+    position:absolute;
+    bottom:6px;
+    width:70px; height:96px;
+    opacity:0.85;
+  }
+  .soldier.left{ left:14px; }
+  .soldier.right{ right:14px; transform: scaleX(-1); }
+
+  .hero-copy{
+    position:relative; z-index:2;
+    margin-top:6px;
+  }
+  .hero-copy h1{
+    font-size:34px;
+    line-height:1.15;
+    margin:0 0 10px;
+    font-weight:800;
+  }
+  .hero-copy h1 .grad{
+    background: linear-gradient(90deg, #a855f7, #7c6cf7);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero-copy p{
+    color: var(--muted);
+    font-size:14.5px;
+    line-height:1.5;
+    max-width:420px;
+    margin:0 0 22px;
   }
 
-  input::placeholder {
-    color: #6b6b73;
+  .features{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:26px;
+  }
+  .feature{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .feature-icon{
+    flex:0 0 auto;
+    width:40px;height:40px;
+    border-radius:11px;
+    background: rgba(155,60,242,0.14);
+    border:1px solid rgba(168,85,247,0.25);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;
+  }
+  .feature-text h3{
+    margin:0 0 3px;
+    font-size:14.5px;
+    font-weight:700;
+  }
+  .feature-text p{
+    margin:0;
+    font-size:12.8px;
+    color: var(--muted);
+    line-height:1.4;
   }
 
-  input:focus {
-    outline: none;
-    border-color: #8b5cf6;
+  .stats{
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    border:1px solid rgba(168,85,247,0.25);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .stat{
+    padding:14px 8px;
+    text-align:center;
+    border-right:1px solid rgba(168,85,247,0.18);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .num{
+    color:#b276ff;
+    font-weight:800;
+    font-size:16px;
+  }
+  .stat .label{
+    font-size:11px;
+    color: var(--muted);
+    margin-top:2px;
   }
 
-  label {
-    display: block;
-    color: #d0d0d5;
-    font-size: 14px;
-    margin-bottom: 8px;
+  /* ============ RIGHT PANEL (FORM) ============ */
+  .form-panel{
+    background: var(--panel);
+    border:none;
+    border-radius:0;
+    padding:32px 34px 28px;
+  }
+  .form-panel h2{
+    margin:0 0 6px;
+    font-size:26px;
+    font-weight:800;
+  }
+  .form-panel > p.sub{
+    margin:0 0 20px;
+    color: var(--muted);
+    font-size:13.5px;
+  }
+  .section-label{
+    color:#b276ff;
+    font-weight:700;
+    font-size:13px;
+    margin: 18px 0 10px;
+    letter-spacing:0.2px;
+  }
+  .section-label:first-of-type{ margin-top:0; }
+
+  .field{
+    position:relative;
+    margin-bottom:12px;
+  }
+  .field input{
+    width:100%;
+    background: var(--input-bg);
+    border:1px solid rgba(168,85,247,0.35);
+    border-radius:10px;
+    padding:13px 42px;
+    color: var(--text);
+    font-size:14px;
+    outline:none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input::placeholder{ color:#8a82a8; }
+  .field input:focus{
+    border-color:#a855f7;
+    box-shadow: 0 0 0 3px rgba(168,85,247,0.18);
+  }
+  .field .icon-left{
+    position:absolute;
+    left:14px; top:50%; transform:translateY(-50%);
+    color:#9d8fc7;
+    font-size:15px;
+    display:flex;
+  }
+  .field .icon-right{
+    position:absolute;
+    right:14px; top:50%; transform:translateY(-50%);
+    color:#9d8fc7;
+    cursor:pointer;
+    font-size:15px;
+    background:none;
+    border:none;
+    padding:0;
+    display:flex;
   }
 
-  .section-gap {
-    margin-top: 8px;
+  .field-label{
+    font-size:13px;
+    color:#cfc7e8;
+    margin: 4px 0 8px;
   }
 
-  button {
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #fff;
-    margin-top: 8px;
-    background: linear-gradient(90deg, #a21caf, #6366f1, #22d3ee);
-    cursor: pointer;
+  .submit-btn{
+    width:100%;
+    margin-top:8px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background: linear-gradient(90deg, #7c3aed, #3b6bf5);
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition: filter .15s ease, transform .1s ease;
   }
+  .submit-btn:hover{ filter:brightness(1.08); }
+  .submit-btn:active{ transform: translateY(1px); }
 
-  button:hover {
-    filter: brightness(1.1);
+  .login-line{
+    text-align:center;
+    margin-top:14px;
+    font-size:13.5px;
+    color: var(--muted);
   }
+  .login-line a{
+    color:#a855f7;
+    font-weight:700;
+    text-decoration:none;
+  }
+  .login-line a:hover{ text-decoration:underline; }
 
-  /* Tablet: slightly reduce outer spacing, allow a bit wider card */
-  @media (max-width: 768px) {
-    body {
-      padding: 40px 16px;
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px){
+    .layout{
+      grid-template-columns: 1fr;
     }
-    .card {
-      max-width: 480px;
+    .hero{
+      border-right:none;
+      border-bottom:1px solid var(--panel-border);
     }
+    .hero-copy h1{ font-size:28px; }
   }
 
-  /* Mobile: card fills width, less padding, smaller text */
-  @media (max-width: 480px) {
-    body {
-      padding: 24px 12px;
-    }
-    .card {
-      padding: 24px 18px;
-      border-radius: 12px;
-    }
-    h1 {
-      font-size: 24px;
-    }
-    h2 {
-      font-size: 17px;
-    }
-    input, button {
-      font-size: 14px;
-      padding: 12px 14px;
-    }
-  }
-
-  /* Small phones: tighten further */
-  @media (max-width: 360px) {
-    body {
-      padding: 16px 8px;
-    }
-    .card {
-      padding: 20px 14px;
-    }
-    h1 {
-      font-size: 21px;
-    }
+  @media (max-width: 480px){
+    .page{ padding:16px 10px; }
+    .hero, .form-panel{ padding:24px 18px 22px; }
+    .hero-copy h1{ font-size:24px; }
+    .hero-copy p{ font-size:13.5px; }
+    .stats{ grid-template-columns: repeat(2,1fr); }
+    .stat:nth-child(2){ border-right:none; }
+    .stat{ border-bottom:1px solid rgba(168,85,247,0.18); }
+    .stat:nth-child(3), .stat:nth-child(4){ border-bottom:none; }
+    .field input{ padding:12px 40px; font-size:13.5px; }
+    .form-panel h2{ font-size:22px; }
+    .trophy-glow{ width:170px; height:170px; }
+    .trophy-ring{ width:190px; height:56px; }
+    .soldier{ width:52px; height:74px; }
   }
 </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Join the Network</h1>
-    <p class="subtitle">Level up your gaming career today.</p>
+<div class="page">
+  <div class="layout">
 
-    <h2>Account Details</h2>
-    <input type="text" placeholder="Choose a Username">
-    <input type="password" placeholder="Create Password">
-    <input type="text" placeholder="Discord Handle (e.g. User#1234)">
+    <!-- LEFT HERO PANEL -->
+    <div class="hero">
+      <div class="brand">
+        <div class="brand-logo">G</div>
+        <div class="brand-text">
+          <div class="brand-name">Game<span>Link</span></div>
+          <div class="brand-tag">CONNECT · COMPETE · GROW</div>
+        </div>
+      </div>
 
-    <h2 class="section-gap">Link Your Game Accounts</h2>
+      <div class="trophy-wrap">
+        <div class="trophy-glow"></div>
+        <div class="trophy-ring"></div>
+        <svg class="soldier left" viewBox="0 0 60 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="30" cy="86" rx="18" ry="4" fill="#000" opacity="0.3"/>
+          <circle cx="30" cy="18" r="9" fill="#1a1226"/>
+          <rect x="18" y="26" width="24" height="34" rx="6" fill="#1a1226"/>
+          <rect x="14" y="30" width="8" height="26" rx="4" fill="#1a1226"/>
+          <rect x="38" y="30" width="8" height="26" rx="4" fill="#1a1226"/>
+          <rect x="20" y="58" width="9" height="24" rx="3" fill="#1a1226"/>
+          <rect x="31" y="58" width="9" height="24" rx="3" fill="#1a1226"/>
+        </svg>
+        <svg class="soldier right" viewBox="0 0 60 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="30" cy="86" rx="18" ry="4" fill="#000" opacity="0.3"/>
+          <circle cx="30" cy="18" r="9" fill="#1a1226"/>
+          <rect x="18" y="26" width="24" height="34" rx="6" fill="#1a1226"/>
+          <rect x="14" y="30" width="8" height="26" rx="4" fill="#1a1226"/>
+          <rect x="38" y="30" width="8" height="26" rx="4" fill="#1a1226"/>
+          <rect x="20" y="58" width="9" height="24" rx="3" fill="#1a1226"/>
+          <rect x="31" y="58" width="9" height="24" rx="3" fill="#1a1226"/>
+        </svg>
+        <svg width="120" height="130" viewBox="0 0 120 130" style="position:relative;z-index:2;">
+          <defs>
+            <linearGradient id="trophyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c084fc"/>
+              <stop offset="100%" stop-color="#6d28d9"/>
+            </linearGradient>
+          </defs>
+          <path d="M40 20 H80 V50 C80 68 68 78 60 78 C52 78 40 68 40 50 Z" fill="url(#trophyGrad)"/>
+          <path d="M40 26 C24 26 22 46 34 54 C30 46 32 34 40 32 Z" fill="url(#trophyGrad)"/>
+          <path d="M80 26 C96 26 98 46 86 54 C90 46 88 34 80 32 Z" fill="url(#trophyGrad)"/>
+          <rect x="55" y="78" width="10" height="16" fill="url(#trophyGrad)"/>
+          <rect x="44" y="94" width="32" height="8" rx="2" fill="url(#trophyGrad)"/>
+          <rect x="38" y="102" width="44" height="8" rx="2" fill="url(#trophyGrad)"/>
+          <path d="M60 34 L64 44 L75 44 L66 51 L69 62 L60 55 L51 62 L54 51 L45 44 L56 44 Z" fill="#fff"/>
+        </svg>
+      </div>
 
-    <label>Valorant ID</label>
-    <input type="text" placeholder="Name#Tag">
+      <div class="hero-copy">
+        <h1>The Professional<br><span class="grad">Gaming Network</span></h1>
+        <p>Where elite gamers connect with top recruiters and build legendary careers.</p>
 
-    <label>Clash of Clans ID</label>
-    <input type="text" placeholder="Player Tag (e.g. #ABC1234)">
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">👥</div>
+            <div class="feature-text">
+              <h3>For Players</h3>
+              <p>Showcase your skills, build your profile, and get recruited.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-text">
+              <h3>For Recruiters</h3>
+              <p>Discover talented gamers and build your dream team.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-text">
+              <h3>For Everyone</h3>
+              <p>Connect, compete, and grow in the gaming ecosystem.</p>
+            </div>
+          </div>
+        </div>
 
-    <button>Create Profile</button>
+        <div class="stats">
+          <div class="stat"><div class="num">25K+</div><div class="label">Players</div></div>
+          <div class="stat"><div class="num">1.2K+</div><div class="label">Recruiters</div></div>
+          <div class="stat"><div class="num">3.5K+</div><div class="label">Teams Built</div></div>
+          <div class="stat"><div class="num">10K+</div><div class="label">Opportunities</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT FORM PANEL -->
+    <div class="form-panel">
+      <h2>Join the Network</h2>
+      <p class="sub">Level up your gaming career today.</p>
+
+      <div class="section-label">Account Details</div>
+
+      <div class="field">
+        <span class="icon-left">👤</span>
+        <input type="text" placeholder="Choose a Username">
+      </div>
+
+      <div class="field">
+        <span class="icon-left">🔒</span>
+        <input type="password" id="pw1" placeholder="Password">
+        <button class="icon-right" type="button" onclick="togglePw('pw1', this)">👁️</button>
+      </div>
+
+      <div class="field">
+        <span class="icon-left">🔒</span>
+        <input type="password" id="pw2" placeholder="Confirm Password">
+        <button class="icon-right" type="button" onclick="togglePw('pw2', this)">👁️</button>
+      </div>
+
+      <div class="field">
+        <span class="icon-left">🎮</span>
+        <input type="text" placeholder="Discord Handle (e.g. User#1234)">
+      </div>
+
+      <div class="section-label">Link Your Game Accounts</div>
+
+      <div class="field-label">Valorant ID</div>
+      <div class="field">
+        <span class="icon-left">🔻</span>
+        <input type="text" placeholder="Name#Tag">
+      </div>
+
+      <div class="field-label">Clash of Clans ID</div>
+      <div class="field">
+        <span class="icon-left">🛡️</span>
+        <input type="text" placeholder="Player Tag (e.g. #ABC1234)">
+      </div>
+
+      <button class="submit-btn" type="button">Create Profile <span>➕</span></button>
+
+      <div class="login-line">Already have an account? <a href="#">Log in</a></div>
+    </div>
+
   </div>
+</div>
+
+<script>
+  function togglePw(id, btn){
+    const input = document.getElementById(id);
+    if(input.type === "password"){
+      input.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      input.type = "password";
+      btn.textContent = "👁️";
+    }
+  }
+</script>
 
 </body>
 </html>

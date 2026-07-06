@@ -1,11 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameLink - Join the Network</title>
+<style>
+  :root{
+    --purple-1:#a855f7;
+    --purple-2:#7c3aed;
+    --purple-3:#6d28d9;
+    --blue-1:#6366f1;
+    --bg-0:#050308;
+    --panel-bg:#0d0a17;
+    --card-border:rgba(168,85,247,0.25);
+    --input-bg:rgba(20,14,33,0.6);
+    --input-border:rgba(168,85,247,0.35);
+    --text-dim:#9b93ab;
+    --text-faint:#6f6780;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background:#000;
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+    color:#fff;
+    min-height:100vh;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+  }
+
+  .card{
+    position:relative;
+    width:100%;
+    max-width:1080px;
+    display:flex;
+    background:var(--panel-bg);
+    border:1px solid var(--card-border);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 0 80px rgba(124,58,237,0.15), 0 40px 80px rgba(0,0,0,0.6);
+  }
+
+  /* ---------- decorative floating spheres ---------- */
+  .sphere{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    background:radial-gradient(circle at 35% 30%, rgba(168,85,247,0.9), rgba(88,28,135,0.4) 60%, transparent 75%);
+    filter:blur(0.5px);
+  }
+  .sphere.s1{ width:70px; height:70px; top:52px; right:130px; opacity:.55;}
+  .sphere.s2{ width:36px; height:36px; top:288px; right:38px; opacity:.7;}
+  .sphere.s3{ width:120px; height:120px; left:-50px; top:340px; opacity:.35;}
+  .sphere.s4{ width:160px; height:160px; right:-60px; bottom:-60px; opacity:.4;}
+
+  /* ---------- LEFT PANEL ---------- */
+  .left{
+    position:relative;
+    flex:1 1 50%;
+    padding:44px 48px 32px;
+    background:
+      radial-gradient(ellipse 800px 500px at 50% 30%, rgba(124,58,237,0.35), transparent 60%),
+      linear-gradient(160deg, #0a0714 0%, #0c0818 60%, #100a1e 100%);
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:36px;
+  }
+  .brand-mark{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:linear-gradient(135deg,var(--purple-1),var(--blue-1));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:16px;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .brand-text{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+  .brand-text .link{ color:#c084fc; }
+  .brand-tag{
+    font-size:10px;
+    letter-spacing:2.5px;
+    color:var(--text-faint);
+    margin-top:2px;
+    font-weight:600;
+  }
+
+  .trophy-stage{
+    position:relative;
+    height:270px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:20px;
+  }
+  .trophy-glow{
+    position:absolute;
+    width:280px;height:280px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(168,85,247,0.55) 0%, rgba(124,58,237,0.25) 40%, transparent 70%);
+    filter:blur(4px);
+  }
+  .trophy-ring{
+    position:absolute;
+    bottom:18px;
+    width:210px;height:36px;
+    border-radius:50%;
+    border:1.5px solid rgba(168,85,247,0.5);
+  }
+  .trophy-ring.r2{
+    width:270px;height:46px;
+    bottom:8px;
+    border-color:rgba(168,85,247,0.25);
+  }
+  .figure{
+    position:absolute;
+    bottom:10px;
+    width:70px;
+    height:130px;
+    opacity:.85;
+  }
+  .figure.left-fig{ left:14px; }
+  .figure.right-fig{ right:14px; }
+  .figure svg{ width:100%; height:100%; }
+
+  .trophy-svg{
+    position:relative;
+    width:150px;
+    z-index:2;
+    filter:drop-shadow(0 0 25px rgba(168,85,247,0.8));
+  }
+
+  .headline{
+    font-size:34px;
+    line-height:1.15;
+    font-weight:800;
+    margin:4px 0 10px;
+  }
+  .headline .grad{
+    background:linear-gradient(90deg,#a855f7,#7c6ff7,#6366f1);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    display:block;
+  }
+  .sub{
+    color:var(--text-dim);
+    font-size:14.5px;
+    line-height:1.5;
+    max-width:400px;
+    margin-bottom:22px;
+  }
+
+  .features{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .feature{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .feature-icon{
+    flex-shrink:0;
+    width:34px;height:34px;
+    border-radius:9px;
+    background:rgba(124,58,237,0.18);
+    border:1px solid rgba(168,85,247,0.25);
+    display:flex;align-items:center;justify-content:center;
+    color:#c084fc;
+  }
+  .feature-title{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:2px;
+  }
+  .feature-desc{
+    font-size:12.5px;
+    color:var(--text-dim);
+    line-height:1.4;
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:0;
+    border-top:1px solid rgba(168,85,247,0.18);
+    padding-top:18px;
+    margin-top:auto;
+  }
+  .stat{
+    text-align:center;
+    padding:0 4px;
+  }
+  .stat-num{
+    font-size:19px;
+    font-weight:800;
+    color:#c084fc;
+  }
+  .stat-label{
+    font-size:11px;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+
+  /* ---------- RIGHT PANEL ---------- */
+  .right{
+    flex:1 1 50%;
+    padding:44px 48px;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    background:#0a0712;
+  }
+  .join-title{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+  .join-sub{
+    color:var(--text-dim);
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .section-label{
+    color:#c084fc;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:12px;
+  }
+
+  .field{
+    position:relative;
+    margin-bottom:14px;
+  }
+  .field input{
+    width:100%;
+    background:var(--input-bg);
+    border:1px solid var(--input-border);
+    border-radius:12px;
+    padding:14px 44px;
+    color:#fff;
+    font-size:14px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  .field input::placeholder{ color:#786f8c; }
+  .field input:focus{ border-color:#a855f7; }
+  .field-icon{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#a855f7;
+    display:flex;
+  }
+  .field-toggle{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#8a8098;
+    cursor:pointer;
+    display:flex;
+    background:none;border:none;padding:0;
+  }
+
+  .socials-field{
+    position:relative;
+    border:1px solid var(--input-border);
+    background:var(--input-bg);
+    border-radius:12px;
+    padding:14px 16px 14px 44px;
+    margin-bottom:16px;
+  }
+  .socials-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#786f8c;
+    font-size:14px;
+    margin-bottom:10px;
+  }
+  .socials-top .field-icon{ position:static; transform:none; }
+  .social-icons{
+    display:flex;
+    gap:16px;
+    padding-left:2px;
+  }
+  .social-icons svg{ width:19px;height:19px; color:#c084fc; cursor:pointer; opacity:.9; }
+  .social-icons svg:hover{ opacity:1; }
+
+  .agree{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:13px;
+    color:#c9c2d6;
+    margin-bottom:20px;
+  }
+  .agree input{
+    width:17px;height:17px;
+    margin-top:1px;
+    accent-color:#a855f7;
+    flex-shrink:0;
+  }
+  .agree a{ color:#a855f7; text-decoration:none; }
+  .agree a:hover{ text-decoration:underline; }
+
+  .cta{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#a855f7,#6366f1);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 10px 30px rgba(124,58,237,0.35);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .cta:hover{ transform:translateY(-1px); box-shadow:0 14px 36px rgba(124,58,237,0.45); }
+  .cta svg{ width:16px;height:16px; }
+
+  .login-row{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-top:16px;
+  }
+  .login-row a{ color:#a855f7; font-weight:600; text-decoration:none; }
+  .login-row a:hover{ text-decoration:underline; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px){
+    .card{ flex-direction:column; max-width:520px; border-radius:22px; }
+    .left{ padding:32px 28px 28px; }
+    .right{ padding:32px 28px 36px; }
+    .headline{ font-size:28px; }
+    .trophy-stage{ height:220px; }
+    .stats{ grid-template-columns:repeat(4,1fr); }
+    body{ padding:20px 12px; }
+  }
+  @media (max-width: 420px){
+    .stat-num{ font-size:16px; }
+    .stat-label{ font-size:9.5px; }
+    .headline{ font-size:24px; }
+    .sub{ font-size:13px; }
+    .left{ padding:26px 20px 22px; }
+    .right{ padding:26px 20px 30px; }
+    .feature-desc{ font-size:12px; }
+    .field input{ padding:13px 40px; font-size:13.5px; }
+  }
+</style>
 </head>
 <body>
-    
+
+<div class="card">
+  <div class="sphere s1"></div>
+  <div class="sphere s2"></div>
+  <div class="sphere s3"></div>
+  <div class="sphere s4"></div>
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-mark">G</div>
+      <div>
+        <div class="brand-text">Game<span class="link">Link</span></div>
+        <div class="brand-tag">CONNECT &bull; COMPETE &bull; GROW</div>
+      </div>
+    </div>
+
+    <div class="trophy-stage">
+      <div class="trophy-glow"></div>
+      <div class="trophy-ring r2"></div>
+      <div class="trophy-ring"></div>
+
+      <div class="figure left-fig">
+        <svg viewBox="0 0 70 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="35" cy="20" rx="12" ry="13" fill="#050308"/>
+          <path d="M15 130 L18 55 Q35 40 52 55 L55 130 Z" fill="#050308"/>
+        </svg>
+      </div>
+      <div class="figure right-fig">
+        <svg viewBox="0 0 70 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="35" cy="20" rx="12" ry="13" fill="#050308"/>
+          <path d="M15 130 L18 55 Q35 40 52 55 L55 130 Z" fill="#050308"/>
+        </svg>
+      </div>
+
+      <svg class="trophy-svg" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40 10 H80 V45 C80 65 65 75 60 75 C55 75 40 65 40 45 Z" fill="url(#cupgrad)"/>
+        <path d="M40 18 C25 18 18 25 18 35 C18 47 28 55 40 55" stroke="url(#cupgrad)" stroke-width="5" fill="none"/>
+        <path d="M80 18 C95 18 102 25 102 35 C102 47 92 55 80 55" stroke="url(#cupgrad)" stroke-width="5" fill="none"/>
+        <rect x="55" y="75" width="10" height="18" fill="url(#cupgrad)"/>
+        <path d="M42 93 H78 L84 110 H36 Z" fill="url(#cupgrad)"/>
+        <rect x="30" y="110" width="60" height="10" rx="2" fill="url(#cupgrad)"/>
+        <path d="M60 24 L64 34 L75 34 L66 41 L69 52 L60 45 L51 52 L54 41 L45 34 L56 34 Z" fill="#fff"/>
+        <defs>
+          <linearGradient id="cupgrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#7c3aed"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <h1 class="headline">The Professional<span class="grad">Gaming Network</span></h1>
+    <p class="sub">Where elite gamers connect with top recruiters and build legendary careers.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">For Players</div>
+          <div class="feature-desc">Showcase your skills, build your profile, and get recruited.</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">For Recruiters</div>
+          <div class="feature-desc">Discover talented gamers and build your dream team.</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20Z"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">For Everyone</div>
+          <div class="feature-desc">Connect, compete, and grow in the gaming ecosystem.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">25K+</div><div class="stat-label">Players</div></div>
+      <div class="stat"><div class="stat-num">1.2K+</div><div class="stat-label">Recruiters</div></div>
+      <div class="stat"><div class="stat-num">3.5K+</div><div class="stat-label">Teams Built</div></div>
+      <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Opportunities</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="join-title">Join the Network</div>
+    <div class="join-sub">Level up your gaming career today.</div>
+
+    <div class="section-label">Account Details</div>
+
+    <div class="field">
+      <span class="field-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+      </span>
+      <input type="text" placeholder="Choose a Username">
+    </div>
+
+    <div class="field">
+      <span class="field-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>
+      </span>
+      <input type="email" placeholder="Email Address">
+    </div>
+
+    <div class="field">
+      <span class="field-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      </span>
+      <input type="password" placeholder="Password">
+      <button class="field-toggle" type="button" aria-label="Show password">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+
+    <div class="field">
+      <span class="field-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>
+      </span>
+      <input type="password" placeholder="Confirm Password">
+      <button class="field-toggle" type="button" aria-label="Show password">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+
+    <div class="socials-field">
+      <div class="socials-top">
+        <span class="field-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><circle cx="15" cy="9" r="6"/></svg>
+        </span>
+        Your Social Media Handles
+      </div>
+      <div class="social-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 4.9c-.8.4-1.7.6-2.6.8 1-.6 1.7-1.5 2-2.6-.9.5-1.9.9-3 1.1C18.6 3.2 17.4 2.6 16 2.6c-2.5 0-4.5 2-4.5 4.5 0 .4 0 .7.1 1C7.7 8 4.1 6.1 1.7 3.1c-.4.7-.6 1.5-.6 2.4 0 1.6.8 3 2 3.8-.7 0-1.4-.2-2-.5v.1c0 2.2 1.6 4 3.6 4.4-.4.1-.8.2-1.2.2-.3 0-.6 0-.8-.1.6 1.8 2.2 3.1 4.2 3.1-1.5 1.2-3.5 1.9-5.6 1.9-.4 0-.7 0-1.1-.1C2.4 20.5 4.9 21.3 7.5 21.3c8 0 12.4-6.6 12.4-12.4v-.6c.8-.6 1.6-1.4 2.1-2.3Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2s-.2-1.5-.8-2.2c-.8-.8-1.7-.8-2.1-.9C16.3 5 12 5 12 5s-4.3 0-7.1.1c-.4 0-1.3.1-2.1.9-.6.7-.8 2.2-.8 2.2S1.8 10 1.8 11.7v1.6c0 1.7.2 3.5.2 3.5s.2 1.5.8 2.2c.8.8 1.9.8 2.4.9 1.7.2 7.3.1 7.3.1s4.3 0 7.1-.1c.4 0 1.3-.1 2.1-.9.6-.7.8-2.2.8-2.2s.2-1.8.2-3.5v-1.6c0-1.7-.2-3.5-.2-3.5ZM9.8 15V8.9l5.6 3-5.6 3.1Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2h-3.1v13.7c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .6 0 .9.1V9.7c-.3 0-.6-.1-.9-.1-3.1 0-5.6 2.5-5.6 5.6S7.6 21 10.6 21s5.6-2.5 5.6-5.6V8.6c1.1.8 2.5 1.3 4 1.3V6.7c-1.9 0-3.4-1.5-3.6-3.4V2Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 3 2 7v11h5v3l4-3h4l6-5V3H4Zm14 9-3 3h-4l-3 2v-2H5V5h13v7Z"/><rect x="14" y="7" width="2" height="4"/><rect x="10" y="7" width="2" height="4"/></svg>
+      </div>
+    </div>
+
+    <label class="agree">
+      <input type="checkbox" checked>
+      <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+    </label>
+
+    <button class="cta">
+      Create Profile
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+    </button>
+
+    <div class="login-row">Already have an account? <a href="#">Log in</a></div>
+  </div>
+</div>
+
 </body>
 </html>
